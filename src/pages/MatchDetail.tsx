@@ -43,6 +43,7 @@ export default function MatchDetail() {
   const away = getTeam(match.awayTeamId)
   const venue = getVenue(match.venueId)
   const isTbd = match.homeTeamId === 'tbd' || match.awayTeamId === 'tbd'
+  const [dateStr, timeStr] = formatMatchDateTime(match.date).split(' · ')
 
   async function handleSaveNote() {
     await saveNote(id!, note)
@@ -100,7 +101,10 @@ export default function MatchDetail() {
           <div className="border-t border-rim pt-4 space-y-2">
             <div className="flex items-center gap-2 text-sm">
               <span className="text-gold">📅</span>
-              <span className="text-ink-2">{formatMatchDateTime(match.date)} ART</span>
+              <span className="text-ink-2">
+                <span className="font-bold text-white">{dateStr}</span>
+                {' · '}{timeStr} ART
+              </span>
             </div>
             {venue && (
               <>

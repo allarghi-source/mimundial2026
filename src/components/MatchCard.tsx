@@ -85,7 +85,7 @@ export default function MatchCard({ match, showDate = false }: Props) {
               <span className="text-xl font-bold text-gold">{formatMatchTime(match.date)}</span>
             )}
             {showDate && (
-              <span className="text-xs text-ink-3 mt-1">{formatMatchDate(match.date)}</span>
+              <span className="text-xs font-bold text-white mt-1">{formatMatchDate(match.date)}</span>
             )}
             <span className="text-xs text-ink-3 mt-1">ART</span>
           </div>

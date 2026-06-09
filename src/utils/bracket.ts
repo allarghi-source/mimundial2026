@@ -13,7 +13,10 @@ export function resolveSlot(
     const pos = parseInt(groupPos[1])
     const group = groupPos[2]
     const s = standings.get(group) ?? []
-    return s.find(t => t.position === pos)?.teamId ?? null
+    const team = s.find(t => t.position === pos)
+    // Only resolve if the team has actually played — pj=0 means no results loaded yet
+    if (!team || team.pj === 0) return null
+    return team.teamId
   }
 
   // Third qualifier slot: "3rd_1" .. "3rd_8"

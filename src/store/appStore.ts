@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Favorite, PersonalEvent, UserPreferences, MatchResult, QualifiedThird } from '../types'
+import type { Favorite, PersonalEvent, UserPreferences, MatchResult, QualifiedThird, Pronostico } from '../types'
 import * as storage from '../services/storage'
 
 interface AppState {
@@ -8,6 +8,7 @@ interface AppState {
   preferences: UserPreferences
   matchResults: Map<string, MatchResult>
   qualifiedThirds: Map<string, QualifiedThird>
+  pronosticos: Map<string, Pronostico>
   initialized: boolean
 
   init: () => Promise<void>
@@ -35,12 +36,19 @@ interface AppState {
   saveQualifiedThird: (slot: string, teamId: string) => Promise<void>
   removeQualifiedThird: (slot: string) => Promise<void>
   clearQualifiedThirds: () => Promise<void>
+
+  // Pronósticos
+  savePronostico: (matchId: string, homeScore: number, awayScore: number) => Promise<void>
+  deletePronostico: (matchId: string) => Promise<void>
+  clearPronosticos: () => Promise<void>
+  finalizePronosticos: () => Promise<void>
 }
 
 const DEFAULT_PREFS: UserPreferences = {
   theme: 'dark',
   favoriteTeams: [],
   notifications: false,
+  pronosticosFinalized: false,
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -49,23 +57,27 @@ export const useAppStore = create<AppState>((set, get) => ({
   preferences: DEFAULT_PREFS,
   matchResults: new Map(),
   qualifiedThirds: new Map(),
+  pronosticos: new Map(),
   initialized: false,
 
   async init() {
     if (get().initialized) return
-    const [favs, events, prefs, results, thirds] = await Promise.all([
+    const [favs, events, prefs, results, thirds, pronos] = await Promise.all([
       storage.getFavorites(),
       storage.getPersonalEvents(),
       storage.getPreferences(),
       storage.getMatchResults(),
       storage.getQualifiedThirds(),
+      storage.getPronosticos(),
     ])
     set({
       favorites: new Set(favs.map((f: Favorite) => f.matchId)),
       personalEvents: new Map(events.map((e: PersonalEvent) => [e.matchId, e])),
-      preferences: prefs ?? DEFAULT_PREFS,
+      // Merge with defaults to handle existing stored prefs missing new fields
+      preferences: { ...DEFAULT_PREFS, ...(prefs ?? {}) },
       matchResults: new Map(results.map((r: MatchResult) => [r.matchId, r])),
       qualifiedThirds: new Map(thirds.map((qt: QualifiedThird) => [qt.slot, qt])),
+      pronosticos: new Map(pronos.map((p: Pronostico) => [p.matchId, p])),
       initialized: true,
     })
   },
@@ -171,5 +183,31 @@ export const useAppStore = create<AppState>((set, get) => ({
   async clearQualifiedThirds() {
     await storage.clearQualifiedThirds()
     set({ qualifiedThirds: new Map() })
+  },
+
+  async savePronostico(matchId, homeScore, awayScore) {
+    const p: Pronostico = { matchId, homeScore, awayScore }
+    await storage.savePronostico(p)
+    const next = new Map(get().pronosticos)
+    next.set(matchId, p)
+    set({ pronosticos: next })
+  },
+
+  async deletePronostico(matchId) {
+    await storage.deletePronostico(matchId)
+    const next = new Map(get().pronosticos)
+    next.delete(matchId)
+    set({ pronosticos: next })
+  },
+
+  async clearPronosticos() {
+    await storage.clearPronosticos()
+    set({ pronosticos: new Map() })
+  },
+
+  async finalizePronosticos() {
+    const updated = { ...get().preferences, pronosticosFinalized: true }
+    await storage.savePreferences(updated)
+    set({ preferences: updated })
   },
 }))

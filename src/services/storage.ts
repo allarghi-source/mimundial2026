@@ -1,8 +1,8 @@
 import { openDB, type IDBPDatabase } from 'idb'
-import type { Favorite, PersonalEvent, UserPreferences, MatchResult, QualifiedThird } from '../types'
+import type { Favorite, PersonalEvent, UserPreferences, MatchResult, QualifiedThird, Pronostico } from '../types'
 
 const DB_NAME = 'mimundial2026'
-const DB_VERSION = 2
+const DB_VERSION = 3
 
 interface WorldCupDB {
   favorites: { key: string; value: Favorite }
@@ -10,6 +10,7 @@ interface WorldCupDB {
   preferences: { key: string; value: UserPreferences }
   matchResults: { key: string; value: MatchResult }
   qualifiedThirds: { key: string; value: QualifiedThird }
+  pronosticos: { key: string; value: Pronostico }
 }
 
 let db: IDBPDatabase<WorldCupDB> | null = null
@@ -32,6 +33,9 @@ async function getDB(): Promise<IDBPDatabase<WorldCupDB>> {
       }
       if (!database.objectStoreNames.contains('qualifiedThirds')) {
         database.createObjectStore('qualifiedThirds', { keyPath: 'slot' })
+      }
+      if (!database.objectStoreNames.contains('pronosticos')) {
+        database.createObjectStore('pronosticos', { keyPath: 'matchId' })
       }
     },
   })
@@ -115,4 +119,22 @@ export async function deleteQualifiedThird(slot: string): Promise<void> {
 
 export async function clearQualifiedThirds(): Promise<void> {
   await (await getDB()).clear('qualifiedThirds')
+}
+
+// ── Pronósticos ────────────────────────────────────────────────────────────
+
+export async function getPronosticos(): Promise<Pronostico[]> {
+  return (await getDB()).getAll('pronosticos')
+}
+
+export async function savePronostico(p: Pronostico): Promise<void> {
+  await (await getDB()).put('pronosticos', p)
+}
+
+export async function deletePronostico(matchId: string): Promise<void> {
+  await (await getDB()).delete('pronosticos', matchId)
+}
+
+export async function clearPronosticos(): Promise<void> {
+  await (await getDB()).clear('pronosticos')
 }

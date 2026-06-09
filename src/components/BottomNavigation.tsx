@@ -4,7 +4,7 @@ const items = [
   { to: '/', label: 'Inicio', icon: '🏠' },
   { to: '/fixture', label: 'Fixture', icon: '📅' },
   { to: '/standings', label: 'Grupos', icon: '📊' },
-  { to: '/favorites', label: 'Favoritos', icon: '⭐' },
+  { to: '/pronosticos', label: 'Pronósticos', icon: '🎯' },
   { to: '/admin', label: 'Admin', icon: '⚙️' },
 ]
 

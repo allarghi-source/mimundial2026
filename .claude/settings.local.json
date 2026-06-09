@@ -13,7 +13,8 @@
       "Read(//c/Users/CONECTIA BA/Downloads/**)",
       "Bash(grep -iE \"\\\\.\\(png|svg|zip|jpg|webp\\)$\")",
       "Bash(node -e \"const d = require\\('./src/data/worldcup2026.json'\\); d.teams.slice\\(0,5\\).forEach\\(t => console.log\\(JSON.stringify\\(t\\)\\)\\)\")",
-      "Bash(node -e \"const d = require\\('./src/data/worldcup2026.json'\\); d.teams.forEach\\(t => console.log\\(t.id, t.name\\)\\)\")"
+      "Bash(node -e \"const d = require\\('./src/data/worldcup2026.json'\\); d.teams.forEach\\(t => console.log\\(t.id, t.name\\)\\)\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

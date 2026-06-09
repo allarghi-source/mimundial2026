@@ -118,8 +118,9 @@ export default function ResultModal({ match, onClose }: Props) {
         </div>
 
         {/* Date/time info */}
-        <p className="text-xs text-ink-3 text-center mb-5">
-          {formatMatchDate(match.date)} · {formatMatchTime(match.date)} ART
+        <p className="text-xs text-center mb-5">
+          <span className="font-bold text-white">{formatMatchDate(match.date)}</span>
+          <span className="text-ink-3"> · {formatMatchTime(match.date)} ART</span>
         </p>
 
         {/* Action buttons */}

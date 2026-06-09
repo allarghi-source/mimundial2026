@@ -47,6 +47,13 @@ export interface UserPreferences {
   theme: 'dark' | 'light'
   favoriteTeams: string[]
   notifications: boolean
+  pronosticosFinalized?: boolean
+}
+
+export interface Pronostico {
+  matchId: string
+  homeScore: number
+  awayScore: number
 }
 
 export interface Favorite {

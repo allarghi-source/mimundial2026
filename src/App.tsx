@@ -15,6 +15,7 @@ const Settings = lazy(() => import('./pages/Settings'))
 const MatchDetail = lazy(() => import('./pages/MatchDetail'))
 const Standings = lazy(() => import('./pages/Standings'))
 const Admin = lazy(() => import('./pages/Admin'))
+const Pronosticos = lazy(() => import('./pages/Pronosticos'))
 
 function Loader() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="/match/:id" element={<MatchDetail />} />
             <Route path="/standings" element={<Standings />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/pronosticos" element={<Pronosticos />} />
           </Route>
         </Routes>
       </Suspense>

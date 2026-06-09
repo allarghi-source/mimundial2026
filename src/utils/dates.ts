@@ -24,12 +24,15 @@ export function formatMatchTime(isoString: string): string {
 
 export function formatMatchDate(isoString: string): string {
   const d = toART(isoString)
-  return format(d, "d 'de' MMMM", { locale: es })
+  return format(d, 'd MMM', { locale: es }).toUpperCase()
 }
 
 export function formatMatchDateTime(isoString: string): string {
   const d = toART(isoString)
-  return format(d, "EEEE d MMM · HH:mm", { locale: es })
+  const dayOfWeek = format(d, 'EEEE', { locale: es })
+  const dayMonth = format(d, 'd MMM', { locale: es }).toUpperCase()
+  const time = format(d, 'HH:mm')
+  return `${dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)} ${dayMonth} · ${time}`
 }
 
 export function formatDayHeader(isoString: string): string {
